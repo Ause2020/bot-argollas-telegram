@@ -3,7 +3,7 @@ import telebot
 from telebot import types
 import math
 
-# Configuración del bot para Heroku
+# Configuración del bot para Render
 TOKEN = os.environ.get('BOT_TOKEN', '7946242296:AAGv-F3mla-yorBl7v8gNaKk1VhcCl4TIz0')
 bot = telebot.TeleBot(TOKEN)
 
@@ -263,7 +263,7 @@ Para calcular otro presupuesto, envia /presupuesto
     del user_states[user_id]
 
 if __name__ == "__main__":
-    print("Bot iniciado en Heroku...")
+    print("Bot iniciado en Render...")
     try:
         bot.polling(none_stop=True)
     except Exception as e:

@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: bot-argollas
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python bot_presupuesto_argollas.py
+    envVars:
+      - key: BOT_TOKEN
+        value: 7946242296:AAGv-F3mla-yorBl7v8gNaKk1VhcCl4TIz0
