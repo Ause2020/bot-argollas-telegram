@@ -71,7 +71,7 @@ Comandos disponibles:
 /presupuesto - Calcular nuevo presupuesto
 /ayuda - Ver esta ayuda
 """
-    bot.reply_to(message, welcome_text)
+    bot.send_message(message.chat.id, welcome_text)
 
 @bot.message_handler(commands=['presupuesto'])
 def iniciar_presupuesto(message):
@@ -81,7 +81,7 @@ def iniciar_presupuesto(message):
         'anillo1': {},
         'anillo2': {}
     }
-    bot.reply_to(message, "Ingresa la talla del primer anillo (ejemplo: 18):")
+    bot.send_message(message.chat.id, "Ingresa la talla del primer anillo (ejemplo: 18):")
 
 @bot.message_handler(commands=['ayuda'])
 def ayuda(message):
@@ -101,14 +101,14 @@ Tip: Los precios son por gramo:
 - OA/OR: $180,000
 - OB/Pt: $190,000
 """
-    bot.reply_to(message, help_text)
+    bot.send_message(message.chat.id, help_text)
 
 @bot.message_handler(func=lambda message: True)
 def procesar_mensaje(message):
     user_id = message.from_user.id
     
     if user_id not in user_states:
-        bot.reply_to(message, "Envia /presupuesto para comenzar")
+        bot.send_message(message.chat.id, "Envia /presupuesto para comenzar")
         return
     
     estado = user_states[user_id]
@@ -118,52 +118,52 @@ def procesar_mensaje(message):
         if paso == 'anillo1_talla':
             talla = float(message.text)
             if talla <= 0:
-                bot.reply_to(message, "La talla debe ser mayor a 0. Intenta de nuevo:")
+                bot.send_message(message.chat.id, "La talla debe ser mayor a 0. Intenta de nuevo:")
                 return
             
             estado['anillo1']['talla'] = talla
             estado['paso'] = 'anillo1_espesor'
-            bot.reply_to(message, f"Talla del primer anillo: {talla}\n\nAhora ingresa el espesor (ejemplo: 2.5):")
+            bot.send_message(message.chat.id, f"Talla del primer anillo: {talla}\n\nAhora ingresa el espesor (ejemplo: 2.5):")
             
         elif paso == 'anillo1_espesor':
             espesor = float(message.text)
             if espesor <= 0:
-                bot.reply_to(message, "El espesor debe ser mayor a 0. Intenta de nuevo:")
+                bot.send_message(message.chat.id, "El espesor debe ser mayor a 0. Intenta de nuevo:")
                 return
             
             estado['anillo1']['espesor'] = espesor
             estado['paso'] = 'anillo1_material'
-            bot.reply_to(message, f"Espesor del primer anillo: {espesor}\n\nSelecciona el material:", reply_markup=crear_menu_material())
+            bot.send_message(message.chat.id, f"Espesor del primer anillo: {espesor}\n\nSelecciona el material:", reply_markup=crear_menu_material())
             
         elif paso == 'anillo1_corte':
             estado['paso'] = 'anillo2_talla'
-            bot.reply_to(message, "Primer anillo configurado.\n\nAhora ingresa la talla del segundo anillo (ejemplo: 18):")
+            bot.send_message(message.chat.id, "Primer anillo configurado.\n\nAhora ingresa la talla del segundo anillo (ejemplo: 18):")
             
         elif paso == 'anillo2_talla':
             talla = float(message.text)
             if talla <= 0:
-                bot.reply_to(message, "La talla debe ser mayor a 0. Intenta de nuevo:")
+                bot.send_message(message.chat.id, "La talla debe ser mayor a 0. Intenta de nuevo:")
                 return
             
             estado['anillo2']['talla'] = talla
             estado['paso'] = 'anillo2_espesor'
-            bot.reply_to(message, f"Talla del segundo anillo: {talla}\n\nAhora ingresa el espesor (ejemplo: 2.5):")
+            bot.send_message(message.chat.id, f"Talla del segundo anillo: {talla}\n\nAhora ingresa el espesor (ejemplo: 2.5):")
             
         elif paso == 'anillo2_espesor':
             espesor = float(message.text)
             if espesor <= 0:
-                bot.reply_to(message, "El espesor debe ser mayor a 0. Intenta de nuevo:")
+                bot.send_message(message.chat.id, "El espesor debe ser mayor a 0. Intenta de nuevo:")
                 return
             
             estado['anillo2']['espesor'] = espesor
             estado['paso'] = 'anillo2_material'
-            bot.reply_to(message, f"Espesor del segundo anillo: {espesor}\n\nSelecciona el material:", reply_markup=crear_menu_material())
+            bot.send_message(message.chat.id, f"Espesor del segundo anillo: {espesor}\n\nSelecciona el material:", reply_markup=crear_menu_material())
             
         elif paso == 'anillo2_corte':
             calcular_presupuesto_final(message, user_id)
             
     except ValueError:
-        bot.reply_to(message, "Por favor ingresa un numero valido. Intenta de nuevo:")
+        bot.send_message(message.chat.id, "Por favor ingresa un numero valido. Intenta de nuevo:")
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_query(call):
@@ -259,7 +259,7 @@ Peso total: {peso_total:.2f}g
 Para calcular otro presupuesto, envia /presupuesto
 """
     
-    bot.reply_to(message, resumen)
+    bot.send_message(message.chat.id, resumen)
     del user_states[user_id]
 
 if __name__ == "__main__":
