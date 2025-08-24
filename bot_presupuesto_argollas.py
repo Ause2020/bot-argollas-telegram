@@ -2,6 +2,10 @@ import os
 import telebot
 from telebot import types
 import math
+from flask import Flask, request
+import threading
+
+app = Flask(__name__)
 
 # Configuración del bot para Render
 TOKEN = os.environ.get('BOT_TOKEN', '7946242296:AAGv-F3mla-yorBl7v8gNaKk1VhcCl4TIz0')
@@ -57,6 +61,14 @@ def crear_menu_corte():
         types.InlineKeyboardButton("Plano", callback_data="corte_Plano")
     )
     return markup
+
+@app.route('/')
+def home():
+    return 'Bot de Argollas funcionando!'
+
+@app.route('/health')
+def health():
+    return 'OK'
 
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -262,9 +274,19 @@ Para calcular otro presupuesto, envia /presupuesto
     bot.send_message(message.chat.id, resumen)
     del user_states[user_id]
 
-if __name__ == "__main__":
+def run_bot():
     print("Bot iniciado en Render...")
     try:
         bot.polling(none_stop=True)
     except Exception as e:
         print(f"Error: {e}")
+
+if __name__ == "__main__":
+    # Iniciar el bot en un hilo separado
+    bot_thread = threading.Thread(target=run_bot)
+    bot_thread.daemon = True
+    bot_thread.start()
+    
+    # Iniciar el servidor web
+    print("Servidor web iniciado...")
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 10000)))
